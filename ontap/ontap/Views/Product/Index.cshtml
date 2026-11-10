@@ -21,7 +21,15 @@
     |
     <a asp-action="Index"
     asp-route-searchString="@ViewData["CurrentFilter"]"
-	   asp-route-sortOrder="name_desc">Sap xep theo ten (Z-A)</a>
+	asp-route-sortOrder="name_desc">Sap xep theo ten (Z-A)</a>
+    |
+    <a asp-action="Index"
+    asp-route-searchString="@ViewData["CurrentFilter"]"
+    asp-route-sortOrder="id_asc">Sap xep theo id tang</a>
+    |
+    <a asp-action="Index"
+    asp-route-searchString="@ViewData["CurrentFilter"]"
+    asp-route-sortOrder="id_desc">Sap xep theo id giam</a>
 </p>
 <p>
     <a asp-action="Create">Create New</a>
@@ -74,3 +82,16 @@
 }
     </tbody>
 </table>
+
+<div>
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@i"
+           asp-route-searchString="@ViewBag.CurrentFilter"
+           asp-route-sortOrder="@ViewBag.SortOrder">
+            @i
+        </a>
+        <span> | </span>
+    }
+</div>

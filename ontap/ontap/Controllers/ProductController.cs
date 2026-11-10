@@ -36,7 +36,44 @@ namespace ontap.Controllers
         //    return View(data.ToList()); ;
         //}
         // Sap xep theo ten san pham
-        public ActionResult Index(string? searchString, string? sortOrder)
+        //public ActionResult Index(string? searchString, string? sortOrder)
+        //{
+        //    var data = from p in SeedData.Products
+        //               join c in SeedData.Categoris on p.CategoryId equals c.CategoryId
+        //               select new ProductViewModel
+        //               {
+        //                   ProductId = p.ProductId,
+        //                   ProductName = p.ProductName,
+        //                   ProductDescription = p.ProductDescription,
+        //                   ProductPrice = p.ProductPrice,
+        //                   CategoryName = c.CategoryName
+        //               };
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        data = data.Where(p => p.ProductName != null && p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+        //    }
+        //    switch (sortOrder)
+        //    {
+        //        case "name_desc":
+        //            data = data.OrderByDescending(p => p.ProductName);
+        //            break;
+        //        case "name_asc":
+        //            data = data.OrderBy(p => p.ProductName);
+        //            break;
+        //        case "id_desc":
+        //            data = data.OrderByDescending(p => p.ProductId);
+        //            break;
+        //        case "id_asc":
+        //            data = data.OrderBy(p => p.ProductId);
+        //            break;
+        //        default:
+        //            data = data.OrderBy(p => p.ProductId);
+        //            break;
+        //    }
+        //    return View(data.ToList());
+        //}
+        //Them phan trang
+        public ActionResult Index(string? searchString, string? sortOrder, int pageNumber = 1)
         {
             var data = from p in SeedData.Products
                        join c in SeedData.Categoris on p.CategoryId equals c.CategoryId
@@ -60,11 +97,27 @@ namespace ontap.Controllers
                 case "name_asc":
                     data = data.OrderBy(p => p.ProductName);
                     break;
+                case "id_desc":
+                    data = data.OrderByDescending(p => p.ProductId);
+                    break;
+                case "id_asc":
+                    data = data.OrderBy(p => p.ProductId);
+                    break;
                 default:
                     data = data.OrderBy(p => p.ProductId);
                     break;
             }
-            return View(data.ToList());
+            int pageSize = 2; // Số sản phẩm mỗi trang
+            int tong_sp = data.Count(); // Tổng số sản phẩm
+            int tong_so_trang = (int)Math.Ceiling((double)tong_sp / pageSize);
+            int start = (pageNumber - 1) * pageSize; // Tính vị trí bắt đầu
+            var pagedData = data.Skip(start).Take(pageSize); // Lấy dữ liệu cho trang hiện tại
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = tong_so_trang;
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.SortOrder = sortOrder;
+
+            return View(pagedData.ToList());
         }
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
