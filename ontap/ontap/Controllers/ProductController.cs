@@ -15,7 +15,28 @@ namespace ontap.Controllers
         }
         // GET: ProductController
         [HttpGet]
-        public ActionResult Index(string? searchString)
+        //public ActionResult Index(string? searchString)
+        //{
+        //    var data = from p in SeedData.Products
+        //               join c in SeedData.Categoris on p.CategoryId equals c.CategoryId
+        //               select new ProductViewModel
+        //               {
+        //                   ProductId = p.ProductId,
+        //                   ProductName = p.ProductName,
+        //                   ProductDescription = p.ProductDescription,
+        //                   ProductPrice = p.ProductPrice,
+        //                   CategoryName = c.CategoryName
+        //               };
+        //    var products = SeedData.Products.AsQueryable();
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        data = data.Where(p => p.ProductName != null && p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+        //    }
+
+        //    return View(data.ToList()); ;
+        //}
+        // Sap xep theo ten san pham
+        public ActionResult Index(string? searchString, string? sortOrder)
         {
             var data = from p in SeedData.Products
                        join c in SeedData.Categoris on p.CategoryId equals c.CategoryId
@@ -27,15 +48,24 @@ namespace ontap.Controllers
                            ProductPrice = p.ProductPrice,
                            CategoryName = c.CategoryName
                        };
-            var products = SeedData.Products.AsQueryable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                data = data.Where(p => p.ProductName !=null && p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+                data = data.Where(p => p.ProductName != null && p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
             }
-
-            return View(data.ToList()); ;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    data = data.OrderByDescending(p => p.ProductName);
+                    break;
+                case "name_asc":
+                    data = data.OrderBy(p => p.ProductName);
+                    break;
+                default:
+                    data = data.OrderBy(p => p.ProductId);
+                    break;
+            }
+            return View(data.ToList());
         }
-
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
         {

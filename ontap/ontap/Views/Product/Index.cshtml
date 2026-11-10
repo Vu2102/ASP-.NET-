@@ -13,7 +13,16 @@
 
     </p>
 </form>
-
+<p>
+    Sap xep:
+    <a asp-action="Index"
+    asp-route-searchString="@ViewData["CurrentFilter"]"
+    asp-route-sortOrder="name_asc">Sap xep theo ten (A-Z)</a>
+    |
+    <a asp-action="Index"
+    asp-route-searchString="@ViewData["CurrentFilter"]"
+	   asp-route-sortOrder="name_desc">Sap xep theo ten (Z-A)</a>
+</p>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
